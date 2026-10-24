@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+
+  <style>
+  :root {
+    --biru: #1E3A8A; --biru-2: #2E4FA8; --biru-muda: #EEF2FB; --amber: #F2A900; --amber-muda: #FFF6DB;
+    --ink: #1F2937; --ink-2: #4B5563; --ink-3: #6B7280; --garis: #E5E7EB; --latar: #F5F6F8; --putih: #FFFFFF;
+    --hijau: #15803D; --hijau-muda: #E8F5EC; --merah: #B42318; --merah-muda: #FDECEA; --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--latar); color: var(--ink); font: 15px/1.55 "Segoe UI", Roboto, Arial, sans-serif; }
+  a { color: var(--biru); }
+  .kepala { background: var(--biru); color: #fff; border-bottom: 4px solid var(--amber); }
+  .kepala .isi { max-width: 760px; margin: 0 auto; padding: 18px 16px; display: flex; align-items: center; gap: 14px; }
+  .logo { width: 42px; height: 42px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--amber); flex: none; }
+  .kepala h1 { font-size: 17px; margin: 0; letter-spacing: .2px; }
+  .kepala p { margin: 2px 0 0; font-size: 13px; opacity: .85; }
+  .wadah { max-width: 760px; margin: 0 auto; padding: 20px 16px 48px; }
+  .kartu { background: var(--putih); border: 1px solid var(--garis); border-radius: var(--radius); padding: 22px; margin-bottom: 16px; }
+  .kartu h2 { font-size: 16px; margin: 0 0 4px; color: var(--biru); }
+  .kartu .sub { margin: 0 0 16px; color: var(--ink-3); font-size: 13px; }
+  .langkah { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: var(--biru); color: #fff; font-size: 12px; font-weight: 700; align-items: center; justify-content: center; margin-right: 8px; vertical-align: 1px; }
+  .baris { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .baris.satu { grid-template-columns: 1fr; }
+  @media (max-width: 600px) { .baris { grid-template-columns: 1fr; } .kartu { padding: 18px 16px; } }
+  label.f { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--ink-2); }
+  label.f .w { color: var(--merah); }
+  input[type=text], input[type=email], input[type=tel], input[type=date], input[type=number], select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #CBD2DC; border-radius: 8px; font: inherit; background: #fff; color: var(--ink);
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--biru-2); outline-offset: 0; border-color: var(--biru-2); }
+  .bantu { font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+  .bantu.peringatan { color: #92400E; }
+  .bantu.galat { color: var(--merah); }
+  .unggah { border: 1.5px dashed #B8C2D3; border-radius: 8px; padding: 12px; background: #FAFBFD; }
+  .unggah input { width: 100%; font-size: 13.5px; }
+  .catatan { background: var(--amber-muda); border-left: 4px solid var(--amber); padding: 10px 14px; border-radius: 6px; font-size: 14px; margin: 0 0 14px; }
+  .catatan.info { background: var(--biru-muda); border-left-color: var(--biru-2); }
+  .catatan.ok { background: var(--hijau-muda); border-left-color: var(--hijau); }
+  .catatan.err { background: var(--merah-muda); border-left-color: var(--merah); }
+  .cek { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin: 8px 0; }
+  .cek input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+  .tombol { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 8px; padding: 12px 20px; font-weight: 600; font-size: 15px; line-height: 1; font-family: inherit;
+    background: var(--biru); color: #fff; cursor: pointer; text-decoration: none; }
+  .tombol:hover { background: var(--biru-2); }
+  .tombol.lebar { width: 100%; }
+  .tombol.kedua { background: #fff; color: var(--biru); border: 1px solid var(--biru); }
+  .tombol[disabled] { opacity: .55; cursor: wait; }
+  .ringkas { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ringkas td { padding: 6px 0; border-bottom: 1px solid var(--garis); vertical-align: top; }
+  .ringkas td:first-child { color: var(--ink-3); width: 42%; padding-right: 12px; }
+  .noreg { font-size: 28px; font-weight: 800; color: var(--biru); letter-spacing: .5px; margin: 6px 0 2px; }
+  .lencana { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--biru-muda); color: var(--biru); }
+  .tahapan { display: flex; gap: 6px; margin: 18px 0 8px; }
+  .tahapan div { flex: 1; text-align: center; font-size: 11.5px; color: var(--ink-3); }
+  .tahapan div::before { content: ""; display: block; height: 6px; border-radius: 3px; background: var(--garis); margin-bottom: 6px; }
+  .tahapan div.lewat::before { background: var(--biru); }
+  .tahapan div.kini::before { background: var(--amber); }
+  .tahapan div.kini { color: var(--ink); font-weight: 700; }
+  .tersembunyi { display: none !important; }
+  .muat { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.5); border-top-color: #fff; border-radius: 50%; animation: putar .8s linear infinite; }
+  @keyframes putar { to { transform: rotate(360deg); } }
+  .kaki { text-align: center; font-size: 12px; color: var(--ink-3); margin-top: 24px; }
+</style>
+
+  <title>Permohonan Sponsorship & Partisipasi</title>
+</head>
+<body>
+  <header class="kepala"><div class="isi"><div class="logo" aria-hidden="true"></div>
+    <div><h1 id="judulHalaman">Sponsorship &amp; Partisipasi</h1><p id="namaPerusahaan"></p></div></div></header>
+  <main class="wadah">
+    <section class="kartu">
+      <table class="ringkas" id="ringkasan"></table>
+    </section>
+
+    <!-- LENGKAPI BERKAS -->
+    <form class="kartu tersembunyi" data-mode="lengkapi" novalidate>
+      <h2>Lengkapi berkas</h2>
+      <div class="catatan" id="catatanLengkapi"></div>
+      <p class="sub">Unggah hanya berkas yang diminta. Berkas lama tetap tersimpan.</p>
+      <div class="baris satu">
+        <div><label class="f" for="lSurat">Surat permohonan (perbaikan)</label><div class="unggah"><input type="file" id="lSurat" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="lProposal">Proposal (perbaikan)</label><div class="unggah"><input type="file" id="lProposal" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="lKtp">KTP penanggung jawab (perbaikan)</label><div class="unggah"><input type="file" id="lKtp" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="lRek">Buku rekening (perbaikan)</label><div class="unggah"><input type="file" id="lRek" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="lLegal">Dokumen legalitas lembaga (bila diminta)</label><div class="unggah"><input type="file" id="lLegal" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="lLain">Berkas lain yang diminta</label><div class="unggah"><input type="file" id="lLain" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="lKet">Keterangan</label><textarea id="lKet" maxlength="1000"></textarea></div>
+      </div>
+      <div class="catatan tersembunyi" role="alert"></div>
+      <button type="submit" class="tombol lebar">Kirim kelengkapan</button>
+    </form>
+
+    <!-- SURAT PERNYATAAN -->
+    <form class="kartu tersembunyi" data-mode="kesanggupan" novalidate>
+      <h2>Unggah surat pernyataan</h2>
+      <p class="sub" id="subKesanggupan">Permohonan Anda disetujui. Pencairan diproses setelah surat berikut diterima.</p>
+      <div id="rincianSetuju"></div>
+      <ol style="padding-left:20px;margin:0 0 14px">
+        <li>Unduh dan cetak surat yang sudah terisi data Anda (juga terlampir di email persetujuan).</li>
+        <li>Lengkapi No. KTP dan alamat, lalu tanda tangani di atas <b>materai Rp10.000</b>.</li>
+        <li>Scan atau foto dengan jelas, lalu unggah di bawah ini.</li>
+      </ol>
+      <p id="unduhSurat" style="display:flex;gap:8px;flex-wrap:wrap"></p>
+      <div class="baris satu">
+        <div><label class="f" for="kSpk">Surat Pernyataan Kesanggupan (bertanda tangan, bermaterai) <span class="w">*</span></label>
+          <div class="unggah"><input type="file" id="kSpk" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div id="wadahSrp" class="tersembunyi"><label class="f" for="kSrp">Surat Pernyataan Penggunaan Rekening Pribadi (bertanda tangan, bermaterai) <span class="w">*</span></label>
+          <div class="unggah"><input type="file" id="kSrp" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+      </div>
+      <div class="catatan tersembunyi" role="alert"></div>
+      <button type="submit" class="tombol lebar">Kirim surat pernyataan</button>
+    </form>
+
+    <!-- FORM 2 -->
+    <form class="kartu tersembunyi" data-mode="form2" novalidate>
+      <h2>Form 2 — Konfirmasi Penerimaan Dana</h2>
+      <p class="sub">Cek mutasi rekening Anda terlebih dahulu. Bukti yang diminta adalah bukti dana <b>masuk</b> dari sisi penerima, bukan bukti transfer dari kami.</p>
+      <p id="unduhTt"></p>
+      <div class="baris">
+        <div><label class="f" for="tglMasuk">Tanggal dana masuk ke rekening <span class="w">*</span></label><input type="date" id="tglMasuk"></div>
+        <div><label class="f" for="jumlah">Jumlah dana diterima (Rp) <span class="w">*</span></label><input type="text" id="jumlah" inputmode="numeric"></div>
+      </div>
+      <div class="baris satu" style="margin-top:14px"><div>
+        <label class="f">Kesesuaian jumlah <span class="w">*</span></label>
+        <label class="cek"><input type="radio" name="sesuai" value="Sesuai" checked> <span>Sesuai dengan nilai yang disetujui</span></label>
+        <label class="cek"><input type="radio" name="sesuai" value="Tidak sesuai"> <span>Tidak sesuai</span></label>
+      </div></div>
+      <div class="baris satu">
+        <div id="wadahKet2" class="tersembunyi"><label class="f" for="ket2">Jelaskan ketidaksesuaian</label><textarea id="ket2" maxlength="1000"></textarea></div>
+        <div><label class="f" for="fMutasi">Bukti dana masuk (tangkapan layar m-banking / rekening koran) <span class="w">*</span></label>
+          <div class="unggah"><input type="file" id="fMutasi" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="fTt">Tanda Terima Pencairan Dana yang sudah ditandatangani (scan) <span class="w">*</span></label>
+          <div class="unggah"><input type="file" id="fTt" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+      </div>
+      <label class="cek"><input type="checkbox" id="setuju2"> <span>Saya bersedia menyampaikan LPJ paling lambat 14 hari kerja setelah kegiatan selesai.</span></label>
+      <div class="catatan tersembunyi" role="alert"></div>
+      <button type="submit" class="tombol lebar">Kirim konfirmasi</button>
+    </form>
+
+    <!-- FORM 2 — BANTUAN BARANG -->
+    <form class="kartu tersembunyi" data-mode="form2barang" novalidate>
+      <h2>Form 2 — Konfirmasi Penerimaan Barang</h2>
+      <p class="sub">Isi setelah barang Anda terima. Periksa jumlah dan kondisi barang sesuai daftar berikut.</p>
+      <div id="daftarBarang2"></div>
+      <p id="unduhBast"></p>
+      <div class="baris">
+        <div><label class="f" for="tglTerima">Tanggal barang diterima <span class="w">*</span></label><input type="date" id="tglTerima"></div>
+      </div>
+      <div class="baris satu" style="margin-top:14px"><div>
+        <label class="f">Kesesuaian barang <span class="w">*</span></label>
+        <label class="cek"><input type="radio" name="sesuaiB" value="Sesuai" checked> <span>Jumlah dan kondisi sesuai daftar</span></label>
+        <label class="cek"><input type="radio" name="sesuaiB" value="Tidak sesuai"> <span>Ada yang kurang atau rusak</span></label>
+      </div></div>
+      <div class="baris satu">
+        <div id="wadahKetB" class="tersembunyi"><label class="f" for="ketB">Jelaskan barang yang kurang atau rusak <span class="w">*</span></label><textarea id="ketB" maxlength="1000"></textarea></div>
+        <div><label class="f" for="fBast">Berita Acara Serah Terima (BAST) yang sudah ditandatangani (scan) <span class="w">*</span></label>
+          <div class="unggah"><input type="file" id="fBast" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="fFotoB">Foto barang yang diterima <span class="w">*</span></label>
+          <div class="unggah"><input type="file" id="fFotoB" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+      </div>
+      <label class="cek"><input type="checkbox" id="setujuB"> <span>Saya bersedia menyampaikan LPJ beserta dokumentasi pemanfaatan barang paling lambat 14 hari kerja setelah kegiatan selesai.</span></label>
+      <div class="catatan tersembunyi" role="alert"></div>
+      <button type="submit" class="tombol lebar">Kirim konfirmasi</button>
+    </form>
+
+    <!-- FORM 3 -->
+    <form class="kartu tersembunyi" data-mode="form3" novalidate>
+      <h2>Form 3 — Laporan Pertanggungjawaban (LPJ)</h2>
+      <div class="catatan tersembunyi" id="catatanLpj"></div>
+      <p class="sub" id="infoBatas"></p>
+      <div class="baris satu">
+        <div><label class="f" for="ringkasan3">Ringkasan pelaksanaan kegiatan <span class="w">*</span></label><textarea id="ringkasan3" maxlength="3000"
+          placeholder="Waktu dan tempat pelaksanaan, jumlah peserta, hasil kegiatan."></textarea></div>
+        <div><label class="f" for="realisasi3" id="labelRealisasi">Realisasi penggunaan dana (rincian) <span class="w">*</span></label><textarea id="realisasi3" maxlength="3000"
+          placeholder="Contoh: Konsumsi Rp2.000.000; Sewa tenda Rp1.500.000; ..."></textarea></div>
+        <div><label class="f" for="fLaporan">Laporan kegiatan (PDF) <span class="w">*</span></label><div class="unggah"><input type="file" id="fLaporan" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="fBukti" id="labelBukti">Bukti penggunaan dana (kuitansi/nota, digabung dalam satu berkas) <span class="w">*</span></label><div class="unggah"><input type="file" id="fBukti" accept=".pdf,.jpg,.jpeg,.png"></div></div>
+        <div><label class="f" for="fDok">Dokumentasi kegiatan, termasuk publikasi dengan logo/nama PT MMP Kaltim (maks. 5 berkas) <span class="w">*</span></label>
+          <div class="unggah"><input type="file" id="fDok" multiple accept=".pdf,.jpg,.jpeg,.png"></div></div>
+      </div>
+      <div class="catatan tersembunyi" role="alert"></div>
+      <button type="submit" class="tombol lebar">Kirim LPJ</button>
+    </form>
+
+    <section class="kartu tersembunyi" id="sukses" style="text-align:center">
+      <div class="catatan ok" style="text-align:left" id="teksSukses"></div>
+      <p><a class="tombol kedua" id="lnkStatus" href="#" target="_blank">Cek status permohonan</a></p>
+    </section>
+    <div class="kaki" id="kaki"></div>
+  </main>
+
+  <script>
+  /** Utilitas bersama untuk halaman pemohon. */
+  function $(s, el) { return (el || document).querySelector(s); }
+  function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function rupiah(n) { return 'Rp' + String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function angka(v) { return Number(String(v == null ? '' : v).replace(/[^\d]/g, '')) || 0; }
+  /** Format input uang saat diketik: 2500000 -> 2.500.000 */
+  function pasangFormatUang(input) {
+    input.addEventListener('input', function () {
+      var n = angka(input.value);
+      input.value = n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+    });
+  }
+  /** Memanggil fungsi server dengan Promise. */
+  function panggil(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function (ok, gagal) {
+      var r = google.script.run.withSuccessHandler(ok).withFailureHandler(function (e) { gagal(e && e.message ? e : new Error(String(e))); });
+      r[fn].apply(r, args);
+    });
+  }
+  /** Membaca satu berkas dari <input type=file> menjadi {name, type, data(base64)}. */
+  function bacaBerkas(file, maksMb, label) {
+    return new Promise(function (ok, gagal) {
+      if (!file) return ok(null);
+      var ext = (file.name.match(/\.[A-Za-z0-9]+$/) || [''])[0].toLowerCase();
+      if (['.pdf', '.jpg', '.jpeg', '.png'].indexOf(ext) < 0) return gagal(new Error(label + ': format harus PDF, JPG, atau PNG.'));
+      if (file.size > maksMb * 1048576) return gagal(new Error(label + ': ukuran melebihi ' + maksMb + ' MB.'));
+      var r = new FileReader();
+      r.onload = function () { ok({ name: file.name, type: file.type, data: String(r.result).split(',')[1] }); };
+      r.onerror = function () { gagal(new Error('Gagal membaca berkas ' + label + '.')); };
+      r.readAsDataURL(file);
+    });
+  }
+  function berkasDari(id, maksMb, label, wajib) {
+    var el = document.getElementById(id);
+    var f = el && el.files && el.files[0];
+    if (!f && wajib) return Promise.reject(new Error('Berkas wajib belum dipilih: ' + label + '.'));
+    return bacaBerkas(f, maksMb, label);
+  }
+  function setSibuk(btn, sibuk, teks) {
+    if (!btn) return;
+    if (sibuk) { btn.dataset.asli = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="muat"></span> ' + (teks || 'Mengirim...'); }
+    else { btn.disabled = false; if (btn.dataset.asli) btn.innerHTML = btn.dataset.asli; }
+  }
+  function tampilPesan(el, jenis, html) {
+    el.className = 'catatan ' + jenis; el.innerHTML = html; el.classList.remove('tersembunyi');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+
+  <script type="text/x-tunda">
+    var DATA = window.__DATA__;
+    var JUDUL = { lengkapi: 'Lengkapi Berkas', kesanggupan: 'Surat Pernyataan', form2: DATA.barang ? 'Konfirmasi Penerimaan Barang' : 'Konfirmasi Penerimaan Dana', form3: 'Laporan Pertanggungjawaban' };
+    var MODE = DATA.mode === 'form2' && DATA.barang ? 'form2barang' : DATA.mode;
+    function daftarBarangHtml() {
+      return (DATA.rincian || []).length ? '<ol style="padding-left:20px;margin:6px 0 12px">' + DATA.rincian.map(function (b) {
+        return '<li>' + esc(b.nama) + ' — ' + esc(b.jumlah) + (b.satuan ? ' ' + esc(b.satuan) : '') + (b.ket ? ' (' + esc(b.ket) + ')' : '') + '</li>'; }).join('') + '</ol>' : '';
+    }
+    (function init() {
+      $('#judulHalaman').textContent = JUDUL[DATA.mode];
+      $('#namaPerusahaan').textContent = DATA.perusahaan;
+      $('#kaki').textContent = DATA.perusahaan;
+      $('#lnkStatus').href = DATA.urlStatus;
+      var rows = [['No. Registrasi', DATA.id], ['Kegiatan', DATA.kegiatan], ['Penanggung jawab', DATA.nama + (DATA.organisasi ? ' — ' + DATA.organisasi : '')]];
+      if (DATA.mode !== 'lengkapi') rows.push(DATA.barang ? ['Bentuk bantuan', 'Barang (' + (DATA.rincian || []).length + ' jenis)'] : ['Nilai disetujui', DATA.nilai]);
+      $('#ringkasan').innerHTML = rows.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td><b>' + esc(r[1]) + '</b></td></tr>'; }).join('');
+      var form = $('form[data-mode="' + MODE + '"]');
+      form.classList.remove('tersembunyi');
+      form.addEventListener('submit', kirim);
+
+      if (DATA.mode === 'lengkapi') {
+        $('#catatanLengkapi').innerHTML = '<b>Yang perlu dilengkapi:</b><br>' + esc(DATA.catatan || '-').replace(/\n/g, '<br>') +
+          (DATA.batasLengkapi ? '<br><br>Batas: <b>' + esc(DATA.batasLengkapi) + '</b>' : '');
+      }
+      if (DATA.mode === 'kesanggupan') {
+        var tombol = [];
+        if (DATA.draf.spk) tombol.push('<a class="tombol kedua" target="_blank" href="' + esc(DATA.draf.spk.url) + '">Unduh Surat Kesanggupan</a>');
+        if (DATA.rekPribadi && DATA.draf.srp) tombol.push('<a class="tombol kedua" target="_blank" href="' + esc(DATA.draf.srp.url) + '">Unduh Surat Rekening Pribadi</a>');
+        $('#unduhSurat').innerHTML = tombol.join('') || '<span class="bantu">Surat terlampir di email persetujuan.</span>';
+        $('#wadahSrp').classList.toggle('tersembunyi', !DATA.rekPribadi);
+        if (DATA.barang) {
+          $('#subKesanggupan').textContent = 'Permohonan Anda disetujui dalam bentuk bantuan barang. Barang diadakan setelah surat berikut diterima.';
+          $('#rincianSetuju').innerHTML = daftarBarangHtml();
+        }
+      }
+      if (DATA.mode === 'form2') {
+        $('#unduhTt').innerHTML = DATA.draf.tt ? '<a class="tombol kedua" target="_blank" href="' + esc(DATA.draf.tt.url) + '">Unduh Tanda Terima untuk ditandatangani</a>' :
+          '<span class="bantu">Tanda Terima terlampir di email pemberitahuan transfer.</span>';
+        var d = new Date(); $('#tglMasuk').value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        $('#jumlah').value = DATA.nilaiAngka ? String(DATA.nilaiAngka).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+        pasangFormatUang($('#jumlah'));
+        $$('input[name=sesuai]').forEach(function (r) { r.addEventListener('change', function () {
+          $('#wadahKet2').classList.toggle('tersembunyi', $('input[name=sesuai]:checked').value === 'Sesuai'); }); });
+      }
+      if (MODE === 'form2barang') {
+        $('#daftarBarang2').innerHTML = daftarBarangHtml();
+        $('#unduhBast').innerHTML = DATA.draf.bast ? '<a class="tombol kedua" target="_blank" href="' + esc(DATA.draf.bast.url) + '">Unduh BAST untuk ditandatangani</a>' :
+          '<span class="bantu">BAST terlampir di email pemberitahuan serah terima.</span>';
+        var d2 = new Date(); $('#tglTerima').value = d2.getFullYear() + '-' + String(d2.getMonth() + 1).padStart(2, '0') + '-' + String(d2.getDate()).padStart(2, '0');
+        $$('input[name=sesuaiB]').forEach(function (r) { r.addEventListener('change', function () {
+          $('#wadahKetB').classList.toggle('tersembunyi', $('input[name=sesuaiB]:checked').value === 'Sesuai'); }); });
+      }
+      if (DATA.mode === 'form3') {
+        if (DATA.barang) {
+          $('#labelRealisasi').innerHTML = 'Pemanfaatan barang dalam kegiatan <span class="w">*</span>';
+          $('#realisasi3').placeholder = 'Contoh: 2 spanduk dipasang di panggung utama; 50 kaos dibagikan kepada peserta.';
+          $('#labelBukti').innerHTML = 'Bukti pendukung lain (opsional)';
+        }
+        $('#infoBatas').innerHTML = DATA.batasLpj ? 'Batas penyampaian LPJ: <b>' + esc(DATA.batasLpj) + '</b>.' : 'LPJ disampaikan paling lambat 14 hari kerja setelah kegiatan.';
+        if (DATA.status === 'Tidak Patuh') {
+          var c = $('#catatanLpj'); c.className = 'catatan err'; c.textContent = 'LPJ telah melewati batas waktu. Setelah LPJ diterima, Anda dapat mengajukan permohonan kembali.';
+        } else if (DATA.catatan) {
+          var c2 = $('#catatanLpj'); c2.className = 'catatan'; c2.innerHTML = '<b>Perbaikan yang diminta:</b><br>' + esc(DATA.catatan).replace(/\n/g, '<br>');
+        }
+      }
+    })();
+
+    function kirim(e) {
+      e.preventDefault();
+      var form = e.target, btn = $('button[type=submit]', form), pesan = $('.catatan[role=alert]', form), M = DATA.maksMb;
+      var proses;
+      try {
+        if (DATA.mode === 'lengkapi') {
+          proses = Promise.all([berkasDari('lProposal', M, 'Proposal'), berkasDari('lKtp', M, 'KTP'), berkasDari('lRek', M, 'Buku rekening'), berkasDari('lLain', M, 'Berkas lain'), berkasDari('lLegal', M, 'Dokumen legalitas lembaga'), berkasDari('lSurat', M, 'Surat permohonan')])
+            .then(function (f) {
+              if (!f[0] && !f[1] && !f[2] && !f[3] && !f[4] && !f[5] && !$('#lKet').value.trim()) throw new Error('Unggah minimal satu berkas atau tulis keterangan.');
+              return panggil('submitLengkapi', DATA.id, DATA.t, { keterangan: $('#lKet').value.trim(), files: { proposal: f[0], ktp: f[1], rekening: f[2], lain: f[3], legalitas: f[4], surat: f[5] } });
+            }).then(function () { return 'Kelengkapan berkas terkirim. Kami akan memverifikasi ulang permohonan Anda.'; });
+        } else if (DATA.mode === 'kesanggupan') {
+          proses = Promise.all([berkasDari('kSpk', M, 'Surat Pernyataan Kesanggupan', true), DATA.rekPribadi ? berkasDari('kSrp', M, 'Surat Rekening Pribadi', true) : Promise.resolve(null)])
+            .then(function (f) { return panggil('submitKesanggupan', DATA.id, DATA.t, { files: { spk: f[0], srp: f[1] } }); })
+            .then(function () { return DATA.barang ? 'Surat pernyataan diterima. Barang akan diadakan; Anda akan menerima email berisi jadwal serah terima dan Berita Acara Serah Terima (BAST).' :
+              'Surat pernyataan diterima. Pencairan dana akan diproses; Anda akan menerima email saat dana ditransfer.'; });
+        } else if (MODE === 'form2barang') {
+          if (!$('#tglTerima').value) throw new Error('Isi tanggal barang diterima.');
+          var sesuaiB = $('input[name=sesuaiB]:checked').value;
+          if (sesuaiB !== 'Sesuai' && !$('#ketB').value.trim()) throw new Error('Jelaskan barang yang kurang atau rusak.');
+          if (!$('#setujuB').checked) throw new Error('Centang pernyataan kesediaan menyampaikan LPJ.');
+          proses = Promise.all([berkasDari('fBast', M, 'BAST bertanda tangan', true), berkasDari('fFotoB', M, 'Foto barang', true)])
+            .then(function (f) {
+              return panggil('submitForm2', DATA.id, DATA.t, { tglTerima: $('#tglTerima').value, sesuai: sesuaiB, keterangan: $('#ketB').value.trim(), setuju: true, files: { bast: f[0], foto: f[1] } });
+            }).then(function (r) { return 'Konfirmasi penerimaan barang tercatat. Mohon sampaikan LPJ paling lambat <b>' + esc(r.batasLpj) + '</b>; tautan Form 3 sudah dikirim ke email Anda.'; });
+        } else if (DATA.mode === 'form2') {
+          if (!$('#tglMasuk').value) throw new Error('Isi tanggal dana masuk.');
+          if (!angka($('#jumlah').value)) throw new Error('Isi jumlah dana yang diterima.');
+          if (!$('#setuju2').checked) throw new Error('Centang pernyataan kesediaan menyampaikan LPJ.');
+          var sesuai = $('input[name=sesuai]:checked').value;
+          proses = Promise.all([berkasDari('fMutasi', M, 'Bukti dana masuk', true), berkasDari('fTt', M, 'Tanda Terima bertanda tangan', true)])
+            .then(function (f) {
+              return panggil('submitForm2', DATA.id, DATA.t, { tglMasuk: $('#tglMasuk').value, jumlah: angka($('#jumlah').value), sesuai: sesuai,
+                keterangan: $('#ket2').value.trim(), setuju: true, files: { mutasi: f[0], tt: f[1] } });
+            }).then(function (r) { return 'Konfirmasi penerimaan tercatat. Mohon sampaikan LPJ paling lambat <b>' + esc(r.batasLpj) + '</b>; tautan Form 3 sudah dikirim ke email Anda.'; });
+        } else {
+          if (!$('#ringkasan3').value.trim()) throw new Error('Isi ringkasan pelaksanaan kegiatan.');
+          if (!$('#realisasi3').value.trim()) throw new Error(DATA.barang ? 'Isi uraian pemanfaatan barang.' : 'Isi rincian realisasi penggunaan dana.');
+          var dok = Array.prototype.slice.call($('#fDok').files || []);
+          if (!dok.length) throw new Error('Unggah minimal satu dokumentasi kegiatan.');
+          if (dok.length > 5) throw new Error('Dokumentasi maksimal 5 berkas.');
+          proses = Promise.all([berkasDari('fLaporan', M, 'Laporan kegiatan', true), berkasDari('fBukti', M, 'Bukti penggunaan dana', !DATA.barang),
+            Promise.all(dok.map(function (f, i) { return bacaBerkas(f, M, 'Dokumentasi ' + (i + 1)); }))])
+            .then(function (f) {
+              return panggil('submitForm3', DATA.id, DATA.t, { ringkasan: $('#ringkasan3').value.trim(), realisasi: $('#realisasi3').value.trim(),
+                files: { laporan: f[0], bukti: f[1], dokumentasi: f[2] } });
+            }).then(function () { return 'LPJ terkirim. Terima kasih; kami akan memeriksa dan mengabarkan hasilnya melalui email.'; });
+        }
+      } catch (err) { return tampilPesan(pesan, 'err', esc(err.message)); }
+      pesan.classList.add('tersembunyi');
+      setSibuk(btn, true, 'Mengirim...');
+      proses.then(function (teks) {
+        form.classList.add('tersembunyi');
+        $('#teksSukses').innerHTML = teks;
+        $('#sukses').classList.remove('tersembunyi');
+        window.scrollTo(0, 0);
+      }).catch(function (err) { setSibuk(btn, false); tampilPesan(pesan, 'err', esc(err.message)); });
+    }
+  </script>
+  <script>muatHalaman("pemohon");</script>
+</body>
+</html>

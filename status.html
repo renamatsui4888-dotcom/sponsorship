@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+
+  <style>
+  :root {
+    --biru: #1E3A8A; --biru-2: #2E4FA8; --biru-muda: #EEF2FB; --amber: #F2A900; --amber-muda: #FFF6DB;
+    --ink: #1F2937; --ink-2: #4B5563; --ink-3: #6B7280; --garis: #E5E7EB; --latar: #F5F6F8; --putih: #FFFFFF;
+    --hijau: #15803D; --hijau-muda: #E8F5EC; --merah: #B42318; --merah-muda: #FDECEA; --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--latar); color: var(--ink); font: 15px/1.55 "Segoe UI", Roboto, Arial, sans-serif; }
+  a { color: var(--biru); }
+  .kepala { background: var(--biru); color: #fff; border-bottom: 4px solid var(--amber); }
+  .kepala .isi { max-width: 760px; margin: 0 auto; padding: 18px 16px; display: flex; align-items: center; gap: 14px; }
+  .logo { width: 42px; height: 42px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--amber); flex: none; }
+  .kepala h1 { font-size: 17px; margin: 0; letter-spacing: .2px; }
+  .kepala p { margin: 2px 0 0; font-size: 13px; opacity: .85; }
+  .wadah { max-width: 760px; margin: 0 auto; padding: 20px 16px 48px; }
+  .kartu { background: var(--putih); border: 1px solid var(--garis); border-radius: var(--radius); padding: 22px; margin-bottom: 16px; }
+  .kartu h2 { font-size: 16px; margin: 0 0 4px; color: var(--biru); }
+  .kartu .sub { margin: 0 0 16px; color: var(--ink-3); font-size: 13px; }
+  .langkah { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: var(--biru); color: #fff; font-size: 12px; font-weight: 700; align-items: center; justify-content: center; margin-right: 8px; vertical-align: 1px; }
+  .baris { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .baris.satu { grid-template-columns: 1fr; }
+  @media (max-width: 600px) { .baris { grid-template-columns: 1fr; } .kartu { padding: 18px 16px; } }
+  label.f { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--ink-2); }
+  label.f .w { color: var(--merah); }
+  input[type=text], input[type=email], input[type=tel], input[type=date], input[type=number], select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #CBD2DC; border-radius: 8px; font: inherit; background: #fff; color: var(--ink);
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--biru-2); outline-offset: 0; border-color: var(--biru-2); }
+  .bantu { font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+  .bantu.peringatan { color: #92400E; }
+  .bantu.galat { color: var(--merah); }
+  .unggah { border: 1.5px dashed #B8C2D3; border-radius: 8px; padding: 12px; background: #FAFBFD; }
+  .unggah input { width: 100%; font-size: 13.5px; }
+  .catatan { background: var(--amber-muda); border-left: 4px solid var(--amber); padding: 10px 14px; border-radius: 6px; font-size: 14px; margin: 0 0 14px; }
+  .catatan.info { background: var(--biru-muda); border-left-color: var(--biru-2); }
+  .catatan.ok { background: var(--hijau-muda); border-left-color: var(--hijau); }
+  .catatan.err { background: var(--merah-muda); border-left-color: var(--merah); }
+  .cek { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin: 8px 0; }
+  .cek input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+  .tombol { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 8px; padding: 12px 20px; font-weight: 600; font-size: 15px; line-height: 1; font-family: inherit;
+    background: var(--biru); color: #fff; cursor: pointer; text-decoration: none; }
+  .tombol:hover { background: var(--biru-2); }
+  .tombol.lebar { width: 100%; }
+  .tombol.kedua { background: #fff; color: var(--biru); border: 1px solid var(--biru); }
+  .tombol[disabled] { opacity: .55; cursor: wait; }
+  .ringkas { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ringkas td { padding: 6px 0; border-bottom: 1px solid var(--garis); vertical-align: top; }
+  .ringkas td:first-child { color: var(--ink-3); width: 42%; padding-right: 12px; }
+  .noreg { font-size: 28px; font-weight: 800; color: var(--biru); letter-spacing: .5px; margin: 6px 0 2px; }
+  .lencana { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--biru-muda); color: var(--biru); }
+  .tahapan { display: flex; gap: 6px; margin: 18px 0 8px; }
+  .tahapan div { flex: 1; text-align: center; font-size: 11.5px; color: var(--ink-3); }
+  .tahapan div::before { content: ""; display: block; height: 6px; border-radius: 3px; background: var(--garis); margin-bottom: 6px; }
+  .tahapan div.lewat::before { background: var(--biru); }
+  .tahapan div.kini::before { background: var(--amber); }
+  .tahapan div.kini { color: var(--ink); font-weight: 700; }
+  .tersembunyi { display: none !important; }
+  .muat { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.5); border-top-color: #fff; border-radius: 50%; animation: putar .8s linear infinite; }
+  @keyframes putar { to { transform: rotate(360deg); } }
+  .kaki { text-align: center; font-size: 12px; color: var(--ink-3); margin-top: 24px; }
+</style>
+
+  <title>Cek Status Permohonan</title>
+</head>
+<body>
+  <header class="kepala"><div class="isi"><div class="logo" aria-hidden="true"></div>
+    <div><h1>Cek Status Permohonan</h1><p id="namaPerusahaan"></p></div></div></header>
+  <main class="wadah">
+    <section class="kartu">
+      <h2>Masukkan data permohonan</h2>
+      <p class="sub">Gunakan nomor registrasi dan email yang Anda cantumkan saat mengajukan.</p>
+      <form id="frm" novalidate>
+        <div class="baris">
+          <div><label class="f" for="id">Nomor registrasi</label><input type="text" id="id" placeholder="SPR-2026-0001" required></div>
+          <div><label class="f" for="email">Email</label><input type="email" id="email" required></div>
+        </div>
+        <div id="pesan" class="catatan tersembunyi" style="margin-top:14px" role="alert"></div>
+        <p style="margin:16px 0 0"><button type="submit" class="tombol" id="btnCek">Cek status</button></p>
+      </form>
+    </section>
+    <section class="kartu tersembunyi" id="hasil" aria-live="polite"></section>
+    <p style="text-align:center"><a id="lnkForm" href="#">Ajukan permohonan baru</a></p>
+    <div class="kaki" id="kaki"></div>
+  </main>
+  <script>
+  /** Utilitas bersama untuk halaman pemohon. */
+  function $(s, el) { return (el || document).querySelector(s); }
+  function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function rupiah(n) { return 'Rp' + String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function angka(v) { return Number(String(v == null ? '' : v).replace(/[^\d]/g, '')) || 0; }
+  /** Format input uang saat diketik: 2500000 -> 2.500.000 */
+  function pasangFormatUang(input) {
+    input.addEventListener('input', function () {
+      var n = angka(input.value);
+      input.value = n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+    });
+  }
+  /** Memanggil fungsi server dengan Promise. */
+  function panggil(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function (ok, gagal) {
+      var r = google.script.run.withSuccessHandler(ok).withFailureHandler(function (e) { gagal(e && e.message ? e : new Error(String(e))); });
+      r[fn].apply(r, args);
+    });
+  }
+  /** Membaca satu berkas dari <input type=file> menjadi {name, type, data(base64)}. */
+  function bacaBerkas(file, maksMb, label) {
+    return new Promise(function (ok, gagal) {
+      if (!file) return ok(null);
+      var ext = (file.name.match(/\.[A-Za-z0-9]+$/) || [''])[0].toLowerCase();
+      if (['.pdf', '.jpg', '.jpeg', '.png'].indexOf(ext) < 0) return gagal(new Error(label + ': format harus PDF, JPG, atau PNG.'));
+      if (file.size > maksMb * 1048576) return gagal(new Error(label + ': ukuran melebihi ' + maksMb + ' MB.'));
+      var r = new FileReader();
+      r.onload = function () { ok({ name: file.name, type: file.type, data: String(r.result).split(',')[1] }); };
+      r.onerror = function () { gagal(new Error('Gagal membaca berkas ' + label + '.')); };
+      r.readAsDataURL(file);
+    });
+  }
+  function berkasDari(id, maksMb, label, wajib) {
+    var el = document.getElementById(id);
+    var f = el && el.files && el.files[0];
+    if (!f && wajib) return Promise.reject(new Error('Berkas wajib belum dipilih: ' + label + '.'));
+    return bacaBerkas(f, maksMb, label);
+  }
+  function setSibuk(btn, sibuk, teks) {
+    if (!btn) return;
+    if (sibuk) { btn.dataset.asli = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="muat"></span> ' + (teks || 'Mengirim...'); }
+    else { btn.disabled = false; if (btn.dataset.asli) btn.innerHTML = btn.dataset.asli; }
+  }
+  function tampilPesan(el, jenis, html) {
+    el.className = 'catatan ' + jenis; el.innerHTML = html; el.classList.remove('tersembunyi');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+
+  <script type="text/x-tunda">
+    var DATA = window.__DATA__;
+    $('#namaPerusahaan').textContent = DATA.perusahaan;
+    $('#kaki').textContent = DATA.perusahaan;
+    $('#lnkForm').href = DATA.urlForm; $('#lnkForm').target = '_blank';
+    if (DATA.id) $('#id').value = DATA.id;
+    $('#frm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var btn = $('#btnCek'), pesan = $('#pesan');
+      if (!$('#id').value.trim() || !$('#email').value.trim()) return tampilPesan(pesan, 'err', 'Isi nomor registrasi dan email.');
+      pesan.classList.add('tersembunyi');
+      setSibuk(btn, true, 'Memeriksa...');
+      panggil('cekStatus', $('#id').value.trim().toUpperCase(), $('#email').value.trim()).then(function (r) {
+        setSibuk(btn, false);
+        var h = $('#hasil');
+        h.innerHTML =
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">' +
+            '<div><div style="color:var(--ink-3);font-size:13px">' + esc(r.id) + '</div><h2 style="margin:2px 0 0">' + esc(r.kegiatan) + '</h2></div>' +
+            '<span class="lencana">' + esc(r.status) + '</span></div>' +
+          '<div class="tahapan">' + r.tahap.map(function (t, i) {
+            var c = i < r.posisi ? 'lewat' : (i === r.posisi ? (r.berhenti ? '' : 'kini') : '');
+            if (r.status === 'Selesai') c = 'lewat';
+            return '<div class="' + c + '">' + esc(t) + '</div>';
+          }).join('') + '</div>' +
+          '<p class="catatan ' + (r.berhenti ? 'err' : (r.status === 'Selesai' ? 'ok' : 'info')) + '">' + esc(r.info) + '</p>' +
+          '<table class="ringkas"><tr><td>Tanggal masuk</td><td>' + esc(r.tanggalMasuk) + '</td></tr>' +
+            (r.nilai ? '<tr><td>Nilai disetujui</td><td><b>' + esc(r.nilai) + '</b></td></tr>' : '') +
+            (r.batasLpj ? '<tr><td>Batas LPJ</td><td>' + esc(r.batasLpj) + '</td></tr>' : '') + '</table>' +
+          (r.aksi ? '<p style="margin:18px 0 0"><a class="tombol" target="_blank" href="' + esc(r.aksi.url) + '">' + esc(r.aksi.label) + '</a></p>' : '');
+        h.classList.remove('tersembunyi');
+        h.scrollIntoView({ behavior: 'smooth' });
+      }).catch(function (err) { setSibuk(btn, false); tampilPesan(pesan, 'err', esc(err.message)); });
+    });
+  </script>
+  <script>muatHalaman("status");</script>
+</body>
+</html>
